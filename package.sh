@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Package script for Human Typer Mac App
+# Package script for TypeCraft Mac App
 # Creates a .pkg installer that installs to /Applications
 
 set -e
@@ -11,11 +11,11 @@ VERSION="1.0.0"
 BUILD_DIR=".build"
 OUTPUT_DIR="dist"
 APP_DIR="${OUTPUT_DIR}/${APP_NAME}.app"
-FINAL_PKG="${OUTPUT_DIR}/HumanTyper-${VERSION}.pkg"
+FINAL_PKG="${OUTPUT_DIR}/TypeCraft-${VERSION}.pkg"
 ICON_SOURCE="assets/icon.png"
 SCRIPTS_DIR="${OUTPUT_DIR}/scripts"
 
-echo "📦 Building Human Typer Package Installer"
+echo "📦 Building TypeCraft Package Installer"
 echo "========================================="
 
 # Step 1: Build the app
@@ -33,13 +33,13 @@ rm -rf "${APP_DIR}" 2>/dev/null || true
 mkdir -p "${APP_DIR}/Contents/MacOS"
 mkdir -p "${APP_DIR}/Contents/Resources"
 
-# Copy executable
-cp "${BUILD_DIR}/release/HumanTyper" "${APP_DIR}/Contents/MacOS/"
+# copy executable
+cp "${BUILD_DIR}/release/TypeCraft" "${APP_DIR}/Contents/MacOS/"
 
-# Copy Info.plist
+# copy Info.plist
 cp Info.plist "${APP_DIR}/Contents/"
 
-# Create PkgInfo
+# create PkgInfo
 echo -n "APPL????" > "${APP_DIR}/Contents/PkgInfo"
 
 # Step 3: Create icon
@@ -49,7 +49,7 @@ if [ -f "${ICON_SOURCE}" ]; then
     ICONSET_DIR="${OUTPUT_DIR}/AppIcon.iconset"
     mkdir -p "${ICONSET_DIR}"
     
-    # Generate all required icon sizes
+    # generate all required icon sizes
     sips -z 16 16     "${ICON_SOURCE}" --out "${ICONSET_DIR}/icon_16x16.png" >/dev/null 2>&1
     sips -z 32 32     "${ICON_SOURCE}" --out "${ICONSET_DIR}/icon_16x16@2x.png" >/dev/null 2>&1
     sips -z 32 32     "${ICON_SOURCE}" --out "${ICONSET_DIR}/icon_32x32.png" >/dev/null 2>&1
@@ -61,16 +61,16 @@ if [ -f "${ICON_SOURCE}" ]; then
     sips -z 512 512   "${ICON_SOURCE}" --out "${ICONSET_DIR}/icon_512x512.png" >/dev/null 2>&1
     sips -z 1024 1024 "${ICON_SOURCE}" --out "${ICONSET_DIR}/icon_512x512@2x.png" >/dev/null 2>&1
     
-    # Convert to icns
+    # convert to icns
     iconutil -c icns "${ICONSET_DIR}" -o "${APP_DIR}/Contents/Resources/AppIcon.icns" 2>/dev/null || {
         echo "⚠️  Could not create icns, copying PNG as fallback"
         cp "${ICON_SOURCE}" "${APP_DIR}/Contents/Resources/AppIcon.png"
     }
     
-    # Also copy a small PNG for menu bar icon
+    # also copy a small PNG for menu bar icon
     sips -z 36 36 "${ICON_SOURCE}" --out "${APP_DIR}/Contents/Resources/MenuBarIcon.png" >/dev/null 2>&1
     
-    # Cleanup
+    # cleanup
     rm -rf "${ICONSET_DIR}"
 else
     echo ""
@@ -90,24 +90,24 @@ mkdir -p "${SCRIPTS_DIR}"
 cat > "${SCRIPTS_DIR}/postinstall" << 'POSTINSTALL'
 #!/bin/bash
 
-# Post-installation script for Human Typer
-# This script runs after the app is installed
+# post-installation script for TypeCraft
+# this script runs after the app is installed
 
-BUNDLE_ID="com.humantyper.app"
-APP_PATH="/Applications/Human Typer.app"
+BUNDLE_ID="com.typecraft.app"
+APP_PATH="/Applications/TypeCraft.app"
 
-# Set proper permissions
+# set proper permissions
 chmod -R 755 "${APP_PATH}" 2>/dev/null || true
 
-# Remove quarantine attribute (allows app to run without Gatekeeper warning)
+# remove quarantine attribute (allows app to run without Gatekeeper warning)
 xattr -dr com.apple.quarantine "${APP_PATH}" 2>/dev/null || true
 
-# Reset TCC accessibility permissions for this app
-# This clears any stale permissions from previous installs
+# reset TCC accessibility permissions for this app
+# this clears any stale permissions from previous installs
 tccutil reset Accessibility "${BUNDLE_ID}" 2>/dev/null || true
 
-# Log installation
-logger -t "HumanTyper" "Human Typer installed successfully. Accessibility permissions reset."
+# log installation
+logger -t "TypeCraft" "TypeCraft installed successfully. Accessibility permissions reset."
 
 exit 0
 POSTINSTALL
@@ -119,15 +119,15 @@ echo ""
 echo "📦 Step 6: Creating installer package..."
 echo "   Install location: /Applications"
 
-# Create temporary directory with Applications structure
+# create temporary directory with Applications structure
 TEMP_ROOT=$(mktemp -d)
 mkdir -p "${TEMP_ROOT}/Applications"
 cp -R "${APP_DIR}" "${TEMP_ROOT}/Applications/"
 
-# Remove old package if exists
+# remove old package if exists
 rm -f "${FINAL_PKG}"
 
-# Build the package with scripts
+# build the package with scripts
 pkgbuild \
     --root "${TEMP_ROOT}" \
     --identifier "${BUNDLE_ID}" \
@@ -136,11 +136,11 @@ pkgbuild \
     --install-location "/" \
     "${FINAL_PKG}"
 
-# Cleanup temp files
+# cleanup temp files
 rm -rf "${TEMP_ROOT}"
 rm -rf "${SCRIPTS_DIR}"
 
-# Done
+# done
 echo ""
 echo "========================================="
 echo "✅ Package created successfully!"
@@ -163,7 +163,7 @@ echo "   1. Double-click: ${FINAL_PKG}"
 echo "   2. Or run: sudo installer -pkg \"${FINAL_PKG}\" -target /"
 echo ""
 echo "⚠️  After installation:"
-echo "   1. Launch Human Typer from Applications"
+echo "   1. Launch TypeCraft from Applications"
 echo "   2. Grant Accessibility permission when prompted"
 echo "   3. System Settings > Privacy & Security > Accessibility"
 echo ""
