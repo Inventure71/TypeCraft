@@ -1,0 +1,23 @@
+# Build artifacts
+.build/
+dist/
+*.app/
+*.pkg
+
+# Swift Package Manager
+Package.resolved
+
+# Xcode
+*.xcodeproj/
+*.xcworkspace/
+
+# macOS
+.DS_Store
+
+# IDEs
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.swp
