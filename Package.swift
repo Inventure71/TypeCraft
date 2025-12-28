@@ -8,8 +8,8 @@ let package = Package(
     ],
     targets: [
         .executableTarget(
-            name: "HumanTyper",
-            path: "Sources/HumanTyper"
+            name: "TypeCraft",
+            path: "Sources/TypeCraft"
         )
     ]
 )

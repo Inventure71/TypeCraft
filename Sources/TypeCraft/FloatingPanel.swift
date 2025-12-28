@@ -34,7 +34,7 @@ class FloatingPanel: NSWindow {
         self.isOpaque = false
         self.hasShadow = true
         
-        let contentView = PanelContentView(typerService: typerService as! TypeCraftService, closeAction: { [weak self] in
+        let contentView = PanelContentView(typerService: typerService, closeAction: { [weak self] in
             self?.orderOut(nil)
         })
         
